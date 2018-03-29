@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+me.wuxingxing.pay.alipay.config.AlipayAutoConfiguration,\
+me.wuxingxing.pay.wechat.config.WxPayAutoConfiguration

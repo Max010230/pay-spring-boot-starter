@@ -1,0 +1,65 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.6.RELEASE'
+	}
+	repositories {
+		maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+		maven { url 'http://repo.spring.io/plugins-release' }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven-publish'//添加Maven发布插件
+
+configure(allprojects) {
+	apply plugin: 'propdeps'
+	apply plugin: 'propdeps-maven'
+	apply plugin: 'propdeps-idea'
+	apply plugin: 'propdeps-eclipse'
+}
+
+group = 'me.wuxingxing'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter')
+	compile "org.apache.commons:commons-lang3:3.6"
+	compile "org.bouncycastle:bcpkix-jdk15on:1.55"
+	compile fileTree(dir: 'libs', include: '*.jar')
+	compile "commons-codec:commons-codec:1.10"
+	compile group: 'com.github.binarywang', name: 'weixin-java-pay', version: '2.7.7.BETA'
+	compile "org.springframework.boot:spring-boot-autoconfigure"
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+// 指定上传的路径
+def localMavenRepo = 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+
+// 上传Task，Gradle会生成并上传pom.xml文件。
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: localMavenRepo)
+
+			//构造项目的Pom文件
+			pom.project {
+				name = project.name
+				packaging = 'jar'
+				description = 'description'
+			}
+		}
+
+	}
+}
